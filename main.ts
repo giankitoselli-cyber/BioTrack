@@ -19,6 +19,7 @@ interface DayData {
 
 // --- State Management ---
 let currentDate = new Date();
+let calendarViewDate = new Date();
 let appData: Record<string, DayData> = JSON.parse(localStorage.getItem('minimal_routine_v2_2') || '{}');
 let currentTab = 'routine';
 let currentMode = localStorage.getItem('app_mode') || 'system'; // 'light', 'dark', 'system'
@@ -82,7 +83,17 @@ const handleAIChat = async (message: string) => {
     userMsgDiv.innerHTML = `<span class="bg-smoke/10 px-3 py-2 rounded inline-block uppercase text-[10px] tracking-tighter">${message}</span>`;
     chatMessages.appendChild(userMsgDiv);
 
+    const apiKey = process.env.GEMINI_API_KEY;
+    if (!apiKey) {
+        const errorDiv = document.createElement('div');
+        errorDiv.className = 'text-left animate-fade-in';
+        errorDiv.innerHTML = `<span class="bg-red-500/10 text-red-500 px-3 py-2 rounded inline-block uppercase text-[10px] tracking-tighter">ERRORE: CHIAVE API NON CONFIGURATA.</span>`;
+        chatMessages.appendChild(errorDiv);
+        return;
+    }
+
     try {
+        const ai = new GoogleGenAI({ apiKey });
         const response = await ai.models.generateContent({
             model: "gemini-3-flash-preview",
             contents: message,
@@ -279,19 +290,21 @@ const addTask = (name: string, time: string) => {
 // --- Calendar Logic ---
 const renderCalendar = () => {
     const grid = document.getElementById('calendar-grid');
-    const title = document.getElementById('calendar-month-year');
-    if (!grid || !title) return;
+    const monthSelect = document.getElementById('calendar-month-select') as HTMLSelectElement;
+    const yearSelect = document.getElementById('calendar-year-select') as HTMLSelectElement;
+    
+    if (!grid || !monthSelect || !yearSelect) return;
 
     grid.innerHTML = '';
-    const year = currentDate.getFullYear();
-    const month = currentDate.getMonth();
+    const year = calendarViewDate.getFullYear();
+    const month = calendarViewDate.getMonth();
+    
+    monthSelect.value = month.toString();
+    yearSelect.value = year.toString();
     
     const firstDay = new Date(year, month, 1).getDay();
     const daysInMonth = new Date(year, month + 1, 0).getDate();
     
-    const monthNames = ["Gennaio", "Febbraio", "Marzo", "Aprile", "Maggio", "Giugno", "Luglio", "Agosto", "Settembre", "Ottobre", "Novembre", "Dicembre"];
-    title.innerText = `${monthNames[month]} ${year}`.toUpperCase();
-
     const startOffset = firstDay === 0 ? 6 : firstDay - 1;
     for (let i = 0; i < startOffset; i++) {
         grid.appendChild(document.createElement('div'));
@@ -304,7 +317,7 @@ const renderCalendar = () => {
         const isActive = currentDate.toDateString() === dateObj.toDateString();
         
         dayDiv.innerText = d.toString().padStart(2, '0');
-        dayDiv.className = `text-[10px] font-bold ${isToday ? 'today' : ''} ${isActive ? 'active' : ''}`;
+        dayDiv.className = `text-[10px] font-bold p-2 cursor-pointer transition-all border border-transparent hover:border-ink flex items-center justify-center ${isToday ? 'bg-ink text-paper' : ''} ${isActive ? 'border-ink' : 'opacity-60'}`;
         dayDiv.onclick = () => {
             currentDate = dateObj;
             document.getElementById('calendar-overlay')?.classList.add('hidden');
@@ -441,11 +454,27 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // Calendar
     document.getElementById('open-calendar')?.addEventListener('click', () => {
+        calendarViewDate = new Date(currentDate);
         renderCalendar();
         document.getElementById('calendar-overlay')?.classList.remove('hidden');
     });
     document.getElementById('close-calendar')?.addEventListener('click', () => {
         document.getElementById('calendar-overlay')?.classList.add('hidden');
+    });
+
+    document.getElementById('calendar-month-select')?.addEventListener('change', (e) => {
+        calendarViewDate.setMonth(parseInt((e.target as HTMLSelectElement).value));
+        renderCalendar();
+    });
+
+    document.getElementById('calendar-year-select')?.addEventListener('change', (e) => {
+        calendarViewDate.setFullYear(parseInt((e.target as HTMLSelectElement).value));
+        renderCalendar();
+    });
+
+    document.getElementById('calendar-today-btn')?.addEventListener('click', () => {
+        calendarViewDate = new Date();
+        renderCalendar();
     });
 
     // Day Navigation

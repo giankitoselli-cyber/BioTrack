@@ -175,11 +175,38 @@
     <!-- Full Screen Calendar Overlay -->
     <div id="calendar-overlay" class="fixed inset-0 z-[100] bg-paper hidden animate-in fade-in zoom-in-95 duration-300">
         <div class="h-full flex flex-col">
-            <div class="p-8 flex justify-between items-center border-b border-smoke/10">
-                <h2 id="calendar-month-year" class="text-2xl font-bold uppercase tracking-widest">Marzo 2026</h2>
-                <button id="close-calendar" class="p-2 border border-smoke/30 rounded hover:rotate-90 transition-all">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
-                </button>
+            <div class="p-8 flex flex-col sm:flex-row justify-between items-center border-b border-smoke/10 gap-4">
+                <div class="flex items-center gap-2">
+                    <select id="calendar-month-select" class="bg-transparent border border-smoke/30 px-2 py-1 rounded text-xs uppercase font-bold outline-none">
+                        <option value="0">Gennaio</option>
+                        <option value="1">Febbraio</option>
+                        <option value="2">Marzo</option>
+                        <option value="3">Aprile</option>
+                        <option value="4">Maggio</option>
+                        <option value="5">Giugno</option>
+                        <option value="6">Luglio</option>
+                        <option value="7">Agosto</option>
+                        <option value="8">Settembre</option>
+                        <option value="9">Ottobre</option>
+                        <option value="10">Novembre</option>
+                        <option value="11">Dicembre</option>
+                    </select>
+                    <select id="calendar-year-select" class="bg-transparent border border-smoke/30 px-2 py-1 rounded text-xs uppercase font-bold outline-none">
+                        <option value="2024">2024</option>
+                        <option value="2025">2025</option>
+                        <option value="2026">2026</option>
+                        <option value="2027">2027</option>
+                        <option value="2028">2028</option>
+                        <option value="2029">2029</option>
+                        <option value="2030">2030</option>
+                    </select>
+                </div>
+                <div class="flex items-center gap-4">
+                    <button id="calendar-today-btn" class="text-[10px] uppercase tracking-widest border border-smoke/30 px-3 py-1 rounded hover:bg-ink hover:text-paper transition-all">Oggi</button>
+                    <button id="close-calendar" class="p-2 border border-smoke/30 rounded hover:rotate-90 transition-all">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+                    </button>
+                </div>
             </div>
             <div class="flex-1 px-8 py-8 overflow-y-auto">
                 <div class="grid grid-cols-7 gap-2 text-center mb-8 opacity-40 text-[10px] uppercase tracking-widest font-bold">
