@@ -1,0 +1,5 @@
+{
+  "name": "BioTrack: Personal Bio-Tracking & Routine",
+  "description": "A minimal dark-themed app for tracking energy levels, sleep, and daily routines with AI motivational support.",
+  "requestFramePermissions": []
+}
