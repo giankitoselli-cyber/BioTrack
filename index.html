@@ -1,0 +1,197 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Minimal Routine v2.2</title>
+    <link rel="stylesheet" href="./style.css">
+    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;700&family=Courier+Prime:wght@400;700&display=swap" rel="stylesheet">
+</head>
+<body class="transition-colors duration-300">
+
+    <!-- Header & Controls -->
+    <header class="sticky top-0 z-50 bg-paper/90 backdrop-blur-md border-b border-smoke/20">
+        <div class="max-w-2xl mx-auto px-6 py-4">
+            <div class="flex justify-between items-center mb-4">
+                <div class="flex items-center gap-4">
+                    <button id="prev-day" class="p-1 opacity-40 hover:opacity-100 transition-all" title="Giorno Precedente">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"></polyline></svg>
+                    </button>
+                    <div class="flex flex-col">
+                        <h1 id="current-date-display" class="text-sm font-bold uppercase tracking-widest opacity-60">24 MAR 2026</h1>
+                        <span id="progress-percentage" class="text-[10px] opacity-40">PROGRESSO: 0%</span>
+                    </div>
+                    <button id="next-day" class="p-1 opacity-40 hover:opacity-100 transition-all" title="Giorno Successivo">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"></polyline></svg>
+                    </button>
+                </div>
+                
+                <div class="flex gap-3 items-center">
+                    <!-- Theme Selector -->
+                    <select id="theme-select" class="text-[10px] bg-transparent border border-smoke/30 px-2 py-1 rounded outline-none uppercase tracking-tighter">
+                        <option value="default">Classic</option>
+                        <option value="sepia">Sepia</option>
+                        <option value="forest">Forest</option>
+                    </select>
+                    
+                    <!-- Mode Toggle -->
+                    <button id="mode-toggle" class="p-2 border border-smoke/30 rounded-full hover:bg-ink hover:text-paper transition-all" title="Cambia Modalità">
+                        <svg id="mode-icon" xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="5"></circle><line x1="12" y1="1" x2="12" y2="3"></line><line x1="12" y1="21" x2="12" y2="23"></line><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line><line x1="1" y1="12" x2="3" y2="12"></line><line x1="21" y1="12" x2="23" y2="12"></line><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line></svg>
+                    </button>
+                </div>
+            </div>
+            
+            <!-- Progress Bar -->
+            <div class="h-[2px] w-full bg-smoke/10 rounded-full overflow-hidden">
+                <div id="progress-bar" class="h-full bg-ink transition-all duration-500" style="width: 0%"></div>
+            </div>
+
+            <!-- Tab Navigation -->
+            <nav class="flex justify-between mt-6">
+                <button data-tab="routine" class="tab-btn active text-xs uppercase tracking-widest pb-2">Routine</button>
+                <button data-tab="diary" class="tab-btn text-xs uppercase tracking-widest pb-2">Diario</button>
+                <button data-tab="data" class="tab-btn text-xs uppercase tracking-widest pb-2">Dati</button>
+                <button data-tab="ai" class="tab-btn text-xs uppercase tracking-widest pb-2">Assistente</button>
+            </nav>
+        </div>
+    </header>
+
+    <main class="max-w-2xl mx-auto px-6 py-8">
+        
+        <!-- Routine Tab -->
+        <div id="tab-routine" class="tab-content space-y-10">
+            <!-- Sleep & Energy Section -->
+            <section class="section-card space-y-6">
+                <h2 class="text-lg font-bold uppercase tracking-tight border-b border-smoke/20 pb-2 ribbon-accent">Check-in Mattutino</h2>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                    <div class="space-y-3">
+                        <label class="text-[10px] uppercase tracking-widest opacity-50">Ore di sonno</label>
+                        <select id="sleep-hours" class="w-full bg-transparent border-b border-smoke/30 py-2 focus:border-ink outline-none transition-colors text-sm">
+                            <!-- Options generated via JS -->
+                        </select>
+                    </div>
+                    <div class="space-y-3">
+                        <div class="flex justify-between items-center">
+                            <label class="text-[10px] uppercase tracking-widest opacity-50">Qualità riposo</label>
+                            <span id="sleep-quality-val" class="text-[10px] font-bold">5</span>
+                        </div>
+                        <input type="range" id="sleep-quality" min="1" max="10" class="w-full accent-ink">
+                    </div>
+                </div>
+                <div class="space-y-3">
+                    <label class="text-[10px] uppercase tracking-widest opacity-50">Livello Energia Attuale</label>
+                    <div id="energy-selector" class="flex w-full justify-between gap-1"></div>
+                </div>
+            </section>
+
+            <!-- Tasks Section -->
+            <section class="section-card space-y-6">
+                <div class="flex justify-between items-center border-b border-smoke/20 pb-2 ribbon-accent">
+                    <h2 class="text-lg font-bold uppercase tracking-tight">Routine Giornaliera</h2>
+                    <button id="open-calendar" class="text-[10px] uppercase tracking-widest border border-smoke/30 px-3 py-1 rounded hover:bg-ink hover:text-paper transition-all">Calendario</button>
+                </div>
+                
+                <div id="task-list" class="space-y-3">
+                    <!-- Tasks here -->
+                </div>
+
+                <div class="flex flex-col sm:flex-row gap-4 pt-6 border-t border-smoke/10">
+                    <input type="text" id="new-task-name" placeholder="NUOVA ATTIVITÀ..." class="flex-1 bg-transparent border-b border-smoke/30 py-2 focus:border-ink outline-none transition-colors text-sm uppercase">
+                    <div class="flex gap-2 items-center">
+                        <select id="new-task-time" class="bg-transparent border-b border-smoke/30 py-2 focus:border-ink outline-none transition-colors text-sm">
+                            <!-- Options generated via JS -->
+                        </select>
+                        <button id="add-task-btn" class="p-2 border border-smoke/30 rounded hover:bg-ink hover:text-paper transition-all">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg>
+                        </button>
+                    </div>
+                </div>
+            </section>
+        </div>
+
+        <!-- Diary Tab -->
+        <div id="tab-diary" class="tab-content hidden animate-fade-in">
+            <section class="section-card space-y-6 min-h-[60vh] flex flex-col">
+                <h2 class="text-lg font-bold uppercase tracking-tight border-b border-smoke/20 pb-2 ribbon-accent">Diario Personale</h2>
+                <textarea id="diary-input" placeholder="Inizia a scrivere..." class="flex-1 w-full bg-transparent outline-none transition-all resize-none leading-relaxed text-sm font-mono placeholder:opacity-20"></textarea>
+                <div class="text-[10px] opacity-30 text-right uppercase tracking-widest">Salvataggio automatico attivo</div>
+            </section>
+        </div>
+
+        <!-- Data & Well-being Tab -->
+        <div id="tab-data" class="tab-content hidden animate-fade-in">
+            <section class="section-card space-y-8">
+                <h2 class="text-lg font-bold uppercase tracking-tight border-b border-smoke/20 pb-2 ribbon-accent">Analisi Benessere</h2>
+                
+                <div class="space-y-4">
+                    <div class="flex justify-between items-center">
+                        <label class="text-[10px] uppercase tracking-widest opacity-50">Stato di Benessere Generale</label>
+                        <span id="wellbeing-val" class="text-[10px] font-bold">5</span>
+                    </div>
+                    <input type="range" id="wellbeing-input" min="1" max="10" class="w-full accent-ink">
+                    <p class="text-[9px] opacity-40 uppercase italic">Valuta come ti senti fisicamente e mentalmente oggi.</p>
+                </div>
+
+                <div class="p-4 border border-ink/10 bg-smoke/5 space-y-3">
+                    <h3 class="text-[10px] font-bold uppercase tracking-widest">Valutazione AI: Sonno Ottimale</h3>
+                    <div class="flex items-end gap-2">
+                        <span id="ideal-sleep-display" class="text-3xl font-bold tracking-tighter">--</span>
+                        <span class="text-[10px] uppercase opacity-50 pb-1">ORE CONSIGLIATE</span>
+                    </div>
+                    <p id="ideal-sleep-reason" class="text-[10px] leading-relaxed opacity-60">Inserisci i dati per ricevere un'analisi personalizzata.</p>
+                </div>
+
+                <div class="grid grid-cols-2 gap-4">
+                    <div class="p-3 border border-smoke/20">
+                        <p class="text-[8px] uppercase opacity-40 mb-1">Media Sonno Settimanale</p>
+                        <p id="avg-sleep" class="text-sm font-bold">-- ORE</p>
+                    </div>
+                    <div class="p-3 border border-smoke/20">
+                        <p class="text-[8px] uppercase opacity-40 mb-1">Qualità Media</p>
+                        <p id="avg-quality" class="text-sm font-bold">-- / 10</p>
+                    </div>
+                </div>
+            </section>
+        </div>
+
+        <!-- AI Tab -->
+        <div id="tab-ai" class="tab-content hidden animate-fade-in">
+            <section class="section-card h-[60vh] flex flex-col space-y-4">
+                <h2 class="text-lg font-bold uppercase tracking-tight border-b border-smoke/20 pb-2 ribbon-accent">AI Assistant</h2>
+                <div id="chat-messages" class="flex-1 overflow-y-auto space-y-4 text-xs scrollbar-hide p-2">
+                    <div class="text-left opacity-50 italic">Ciao! Sono qui per aiutarti con la tua routine. Puoi chiedermi di aggiungere task o semplicemente chiacchierare.</div>
+                </div>
+                <div class="flex gap-2 pt-4 border-t border-smoke/10">
+                    <input type="text" id="chat-input" placeholder="SCRIVI UN MESSAGGIO..." class="flex-1 bg-transparent text-xs outline-none uppercase tracking-tighter">
+                    <button id="send-chat" class="p-2 opacity-50 hover:opacity-100 transition-all">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="22" y1="2" x2="11" y2="13"></line><polygon points="22 2 15 22 11 13 2 9 22 2"></polygon></svg>
+                    </button>
+                </div>
+            </section>
+        </div>
+
+    </main>
+
+    <!-- Full Screen Calendar Overlay -->
+    <div id="calendar-overlay" class="fixed inset-0 z-[100] bg-paper hidden animate-in fade-in zoom-in-95 duration-300">
+        <div class="h-full flex flex-col">
+            <div class="p-8 flex justify-between items-center border-b border-smoke/10">
+                <h2 id="calendar-month-year" class="text-2xl font-bold uppercase tracking-widest">Marzo 2026</h2>
+                <button id="close-calendar" class="p-2 border border-smoke/30 rounded hover:rotate-90 transition-all">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+                </button>
+            </div>
+            <div class="flex-1 px-8 py-8 overflow-y-auto">
+                <div class="grid grid-cols-7 gap-2 text-center mb-8 opacity-40 text-[10px] uppercase tracking-widest font-bold">
+                    <div>Lun</div><div>Mar</div><div>Mer</div><div>Gio</div><div>Ven</div><div>Sab</div><div>Dom</div>
+                </div>
+                <div id="calendar-grid" class="grid grid-cols-7 gap-4 auto-rows-fr max-w-md mx-auto">
+                    <!-- Days generated via JS -->
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script type="module" src="./main.ts"></script>
+</body>
+</html>

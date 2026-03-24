@@ -1,0 +1,176 @@
+@import "tailwindcss";
+
+@theme {
+  --color-paper: var(--bg-color);
+  --color-smoke: var(--accent-color);
+  --color-ink: var(--text-color);
+}
+
+:root {
+  /* Default Theme: Classic Typewriter (Light) */
+  --bg-color: #F5F5F0;
+  --text-color: #1A1A1A;
+  --accent-color: #707070;
+  --border-color: rgba(0, 0, 0, 0.15);
+  --ribbon-color: #A52A2A; /* Red ribbon accent */
+  --font-mono: 'JetBrains Mono', 'Courier Prime', monospace;
+  --paper-texture: radial-gradient(#d1d1d1 0.5px, transparent 0.5px);
+}
+
+/* Theme Variations */
+[data-theme="sepia"] {
+  --bg-color: #F4ECD8;
+  --text-color: #433422;
+  --accent-color: #8C7355;
+  --border-color: rgba(67, 52, 34, 0.2);
+  --ribbon-color: #5D4037;
+  --paper-texture: none;
+}
+
+[data-theme="forest"] {
+  --bg-color: #1B2621;
+  --text-color: #E0E7E4;
+  --accent-color: #4F6D5F;
+  --border-color: rgba(224, 231, 228, 0.15);
+  --ribbon-color: #81C784;
+  --paper-texture: none;
+}
+
+/* Dark Mode Overrides */
+.dark-mode {
+  --bg-color: #0A0A0A;
+  --text-color: #F5F5F0;
+  --accent-color: #A0A0A0;
+  --border-color: rgba(245, 245, 240, 0.15);
+  --ribbon-color: #FF5252;
+  --paper-texture: none;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root:not(.light-mode):not(.dark-mode) {
+    --bg-color: #0A0A0A;
+    --text-color: #F5F5F0;
+    --accent-color: #A0A0A0;
+    --border-color: rgba(245, 245, 240, 0.15);
+    --ribbon-color: #FF5252;
+    --paper-texture: none;
+  }
+}
+
+body {
+  background-color: var(--bg-color);
+  background-image: var(--paper-texture);
+  background-size: 24px 24px;
+  color: var(--text-color);
+  font-family: var(--font-mono);
+  -webkit-font-smoothing: antialiased;
+  transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+.section-card {
+  border: 1px solid var(--border-color);
+  padding: 2rem;
+  border-radius: 0; /* Sharp corners for formal look */
+  background-color: var(--bg-color);
+  box-shadow: 4px 4px 0px var(--border-color);
+}
+
+/* Ribbon Accent */
+.ribbon-accent {
+  border-left: 4px solid var(--ribbon-color);
+  padding-left: 1rem;
+}
+
+/* Custom Select Styling */
+select {
+  appearance: none;
+  background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3e%3cpolyline points='6 9 12 15 18 9'%3e%3c/polyline%3e%3c/svg%3e");
+  background-repeat: no-repeat;
+  background-position: right 0.5rem center;
+  background-size: 1em;
+  padding-right: 2rem;
+}
+
+/* Tab Navigation */
+.tab-btn {
+  opacity: 0.4;
+  transition: all 0.2s;
+  border-bottom: 2px solid transparent;
+}
+.tab-btn.active {
+  opacity: 1;
+  border-bottom-color: var(--text-color);
+}
+
+/* Custom Scrollbar */
+::-webkit-scrollbar {
+  width: 4px;
+}
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+::-webkit-scrollbar-thumb {
+  background: var(--accent-color);
+  border-radius: 10px;
+  opacity: 0.2;
+}
+
+/* Animations */
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.animate-fade-in {
+  animation: fadeIn 0.4s ease-out forwards;
+}
+
+/* Calendar Grid */
+#calendar-grid > div {
+  aspect-ratio: 1 / 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: all 0.2s;
+  border: 1px solid transparent;
+}
+
+#calendar-grid > div:hover {
+  background-color: var(--accent-color);
+  color: var(--bg-color);
+}
+
+#calendar-grid > div.active {
+  background-color: var(--text-color);
+  color: var(--bg-color);
+}
+
+#calendar-grid > div.today {
+  border-color: var(--text-color);
+}
+
+/* Range Input Styling */
+input[type="range"] {
+  height: 2px;
+  background: var(--smoke);
+  opacity: 0.3;
+  transition: opacity 0.2s;
+}
+input[type="range"]:hover {
+  opacity: 1;
+}
+input[type="range"]::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 12px;
+  height: 12px;
+  background: var(--text-color);
+  cursor: pointer;
+  border-radius: 0;
+}
+
+.scrollbar-hide::-webkit-scrollbar {
+  display: none;
+}
